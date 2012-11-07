@@ -1,8 +1,8 @@
 package se.citerus.cleanercode.app;
 
 import com.google.inject.Inject;
-import se.citerus.cleanercode.model.Customer;
 import se.citerus.cleanercode.model.Campaign;
+import se.citerus.cleanercode.model.Customer;
 import se.citerus.cleanercode.model.CustomerType;
 import se.citerus.cleanercode.model.HalfOfCampaign;
 import se.citerus.cleanercode.repo.CustomerRepository;
@@ -18,11 +18,12 @@ import java.util.Set;
  */
 public class TheAppService implements AppService{
     private final CustomerRepository customerRepository;
-    private final SenderRepository senderRepository = SenderRepository.instance();
+    private final SenderRepository senderRepository;
 
     @Inject
-    public TheAppService(final CustomerRepository customerRepository) {
+    public TheAppService(final CustomerRepository customerRepository, SenderRepository senderRepository) {
         this.customerRepository = customerRepository;
+        this.senderRepository = senderRepository;
     }
 
     public void onTimerEvent() {
