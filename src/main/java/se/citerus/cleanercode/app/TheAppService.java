@@ -4,15 +4,16 @@ import com.google.inject.Inject;
 import org.apache.commons.lang.Validate;
 import se.citerus.cleanercode.model.Campaign;
 import se.citerus.cleanercode.model.Customer;
-import se.citerus.cleanercode.model.CustomerType;
 import se.citerus.cleanercode.model.HalfOfCampaign;
 import se.citerus.cleanercode.repo.CustomerRepository;
 import se.citerus.cleanercode.repo.SenderRepository;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import static org.apache.commons.collections15.CollectionUtils.forAllDo;
+import static org.apache.commons.collections15.CollectionUtils.select;
+import static se.citerus.cleanercode.model.Customer.ofGreatValue;
+import static se.citerus.cleanercode.util.PublishUtil.publishTo;
 
 /**
  *
@@ -27,40 +28,12 @@ public class TheAppService implements AppService{
         this.senderRepository = senderRepository;
     }
 
-    public void onTimerEvent() {
+    public void sendHalfOfOfferToCustomersOfGreatValue() {
         final List<Customer> customers = customerRepository.getNewCustomers();
         final Campaign campaign = new HalfOfCampaign();
 
         Validate.notNull(customers, "Error initializing the CustomerRepository");
 
-        for (Customer c : getUniqueCustomers(customers)) {
-            if (customersOfGreatValue(c)){
-                senderRepository.findFastestSenderService().send(campaign.message(), c);
-            }
-        }
-    }
-
-
-    private boolean customersOfGreatValue(Customer c) {
-        return (c.type() == CustomerType.GOLD
-                || c.type() == CustomerType.VIP)
-                && c.balance().over(1000.00);
-    }
-
-    private List<Customer> getUniqueCustomers(List<Customer> customers) {
-        final Set<Long> ids = new HashSet<Long>();
-        List<Customer> temp = new ArrayList<Customer>();
-        for (Customer c : customers){
-            Long id = c.id();
-            ids.add(id);
-        }
-        for (Long id : ids) {
-            for (Customer c : customers) {
-                if (c.id().equals(id)){
-                    temp.add(c);
-                }
-            }
-        }
-        return temp;
+        forAllDo(select(customers, ofGreatValue()), publishTo(senderRepository, campaign.message()));
     }
 }

@@ -6,7 +6,6 @@ import se.citerus.cleanercode.model.CustomerType;
 import se.citerus.cleanercode.model.HalfOfCampaign;
 import se.citerus.cleanercode.model.Money;
 import se.citerus.cleanercode.repo.CustomerRepository;
-import se.citerus.cleanercode.repo.InMemCustomerRepository;
 import se.citerus.cleanercode.repo.SenderRepository;
 import se.citerus.cleanercode.service.SenderService;
 
@@ -18,27 +17,33 @@ import static org.mockito.Mockito.*;
  * Test for the app service
  */
 public class AppTest {
+    private final CustomerRepository customerRepository = mock(CustomerRepository.class);
+    private final SenderService sender = mock(SenderService.class);
+    private final SenderRepository senderRepository = mock(SenderRepository.class);
+
     @Test
-      public void onTimerEvent(){
+    public void publishOffer(){
+        Customer customer = new Customer(3L,"Ms Y",new Money(2345.67),CustomerType.GOLD);
+        AppService service = new TheAppService(customerRepository, senderRepository);
 
-        SenderRepository senderRepository = mock(SenderRepository.class);
-        SenderService senderService = mock(SenderService.class);
-        String message = new HalfOfCampaign().message();
+        when(customerRepository.getNewCustomers()).thenReturn(Arrays.asList(customer));
+        when(senderRepository.findFastestSenderService()).thenReturn(sender);
 
-        AppService service = new TheAppService(createInMemCustomerRepository(), senderRepository);
+        service.sendHalfOfOfferToCustomersOfGreatValue();
 
-        when(senderRepository.findFastestSenderService()).thenReturn(senderService);
+        verify(sender).send(new HalfOfCampaign().message(), customer);
+    }
 
-        service.onTimerEvent();
+    @Test
+    public void shouldNotPublishOffer(){
+        Customer customer = new Customer(3L,"Ms Q",new Money(987.13),CustomerType.GOLD);
+        AppService service = new TheAppService(customerRepository, senderRepository);
 
-        verify(senderService, times(2)).send(eq(message), any(Customer.class));
-      }
+        when(customerRepository.getNewCustomers()).thenReturn(Arrays.asList(customer));
+        when(senderRepository.findFastestSenderService()).thenReturn(sender);
 
-      private CustomerRepository createInMemCustomerRepository(){
-        return new InMemCustomerRepository(Arrays.asList(
-                new Customer(1L, "Mr X", new Money(987.65), CustomerType.BASIC),
-                new Customer(2L, "Ms V", new Money(1234.56), CustomerType.BASIC),
-                new Customer(3L, "Ms Y", new Money(2345.67), CustomerType.GOLD),
-                new Customer(4L, "Mr Z", new Money(3456.78), CustomerType.VIP)));
-      }
+        service.sendHalfOfOfferToCustomersOfGreatValue();
+
+        verify(sender, never()).send(anyString(), eq(customer));
+    }
 }

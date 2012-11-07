@@ -1,9 +1,15 @@
 package se.citerus.cleanercode.model;
 
+import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.functors.AndPredicate;
+
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  */
-public class Customer {
+public class Customer extends Entity<Customer> {
 
     private final Long id;
     private final String name;
@@ -32,4 +38,37 @@ public class Customer {
     public CustomerType type() {
         return type;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return this == o || !(o == null || getClass() != o.getClass()) && isSame((Customer) o);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+
+
+    public static Predicate<Customer> ofGreatValue() {
+        return new AndPredicate<Customer>(new Customer.UniqueEntityPredicate<Customer>(), new Customer.CustomersOfGreatValuePredicate());
+    }
+    public static class UniqueEntityPredicate<T extends Entity<T>> implements Predicate<T> {
+        private Set<Long> ids = new HashSet<Long>();
+
+        public boolean evaluate(T t) {
+            return ids.add(t.id());
+        }
+    }
+
+    public static class CustomersOfGreatValuePredicate implements Predicate<Customer>{
+        public boolean evaluate(Customer c) {
+            return (c.type() == CustomerType.GOLD
+                    || c.type() == CustomerType.VIP)
+                    && c.balance().over(1000.00);
+        }
+    }
+
+
 }

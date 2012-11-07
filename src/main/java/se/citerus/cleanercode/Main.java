@@ -11,6 +11,6 @@ public class Main {
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new AppModule());
         AppService appService = injector.getInstance(AppService.class);
-        appService.onTimerEvent();
+        appService.sendHalfOfOfferToCustomersOfGreatValue();
     }
 }
