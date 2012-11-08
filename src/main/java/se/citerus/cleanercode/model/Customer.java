@@ -1,6 +1,7 @@
 package se.citerus.cleanercode.model;
 
 import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.functors.AndPredicate;
 
 import java.util.HashSet;
@@ -39,17 +40,6 @@ public class Customer extends Entity<Customer> {
         return type;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return this == o || !(o == null || getClass() != o.getClass()) && isSame((Customer) o);
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-
 
     public static Predicate<Customer> ofGreatValue() {
         return new AndPredicate<Customer>(new Customer.UniqueEntityPredicate<Customer>(), new Customer.CustomersOfGreatValuePredicate());
@@ -71,4 +61,11 @@ public class Customer extends Entity<Customer> {
     }
 
 
+    public static Transformer<Customer, Recipient> asRecipient() {
+        return new Transformer<Customer, Recipient>() {
+            public Recipient transform(Customer customer) {
+                return new Recipient(customer.name());
+            }
+        };
+    }
 }

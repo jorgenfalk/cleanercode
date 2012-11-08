@@ -1,13 +1,10 @@
 package se.citerus.cleanercode.app;
 
 import org.junit.Test;
-import se.citerus.cleanercode.model.Customer;
-import se.citerus.cleanercode.model.CustomerType;
-import se.citerus.cleanercode.model.HalfOfCampaign;
-import se.citerus.cleanercode.model.Money;
+import se.citerus.cleanercode.model.*;
+import se.citerus.cleanercode.publish.SenderService;
 import se.citerus.cleanercode.repo.CustomerRepository;
 import se.citerus.cleanercode.repo.SenderRepository;
-import se.citerus.cleanercode.service.SenderService;
 
 import java.util.Arrays;
 
@@ -31,7 +28,7 @@ public class AppTest {
 
         service.sendHalfOfOfferToCustomersOfGreatValue();
 
-        verify(sender).send(new HalfOfCampaign().message(), customer);
+        verify(sender).send(new HalfOfCampaign().message(), new Recipient(customer.name()));
     }
 
     @Test
@@ -44,6 +41,6 @@ public class AppTest {
 
         service.sendHalfOfOfferToCustomersOfGreatValue();
 
-        verify(sender, never()).send(anyString(), eq(customer));
+        verify(sender, never()).send(anyString(), eq(new Recipient(customer.name())));
     }
 }

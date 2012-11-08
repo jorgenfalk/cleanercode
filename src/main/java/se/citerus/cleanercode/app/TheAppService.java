@@ -10,10 +10,10 @@ import se.citerus.cleanercode.repo.SenderRepository;
 
 import java.util.List;
 
-import static org.apache.commons.collections15.CollectionUtils.forAllDo;
-import static org.apache.commons.collections15.CollectionUtils.select;
+import static org.apache.commons.collections15.CollectionUtils.*;
+import static se.citerus.cleanercode.model.Customer.asRecipient;
 import static se.citerus.cleanercode.model.Customer.ofGreatValue;
-import static se.citerus.cleanercode.util.PublishUtil.publishTo;
+import static se.citerus.cleanercode.publish.PublishUtil.publishTo;
 
 /**
  *
@@ -34,6 +34,7 @@ public class TheAppService implements AppService{
 
         Validate.notNull(customers, "Error initializing the CustomerRepository");
 
-        forAllDo(select(customers, ofGreatValue()), publishTo(senderRepository, campaign.message()));
+        forAllDo(collect(select(customers, ofGreatValue()), asRecipient()),
+                publishTo(senderRepository, campaign.message()));
     }
 }
