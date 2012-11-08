@@ -1,4 +1,4 @@
-package se.citerus.cleanercode.service;
+package se.citerus.cleanercode.publish;
 
 import se.citerus.cleanercode.model.Customer;
 

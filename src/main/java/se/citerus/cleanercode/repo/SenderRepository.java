@@ -1,7 +1,7 @@
 package se.citerus.cleanercode.repo;
 
-import se.citerus.cleanercode.service.FastestSenderService;
-import se.citerus.cleanercode.service.SenderService;
+import se.citerus.cleanercode.publish.FastestSenderService;
+import se.citerus.cleanercode.publish.SenderService;
 
 /**
  *

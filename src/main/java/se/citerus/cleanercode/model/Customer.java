@@ -3,7 +3,7 @@ package se.citerus.cleanercode.model;
 /**
  *
  */
-public class Customer {
+public class Customer extends Entity<Customer>{
 
     private final Long id;
     private final String name;

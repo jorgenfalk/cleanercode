@@ -1,4 +1,4 @@
-package se.citerus.cleanercode.service;
+package se.citerus.cleanercode.publish;
 
 import se.citerus.cleanercode.model.Customer;
 
@@ -6,5 +6,5 @@ import se.citerus.cleanercode.model.Customer;
  *
  */
 public interface SenderService {
-    void send(String message, Customer c);
+    void send(String message, Customer customer);
 }
