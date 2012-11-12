@@ -1,8 +1,8 @@
 package se.citerus.cleanercode.app;
 
 import com.google.inject.Inject;
-import se.citerus.cleanercode.model.Customer;
 import se.citerus.cleanercode.model.Campaign;
+import se.citerus.cleanercode.model.Customer;
 import se.citerus.cleanercode.model.CustomerType;
 import se.citerus.cleanercode.model.HalfOfCampaign;
 import se.citerus.cleanercode.repo.CustomerRepository;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
+ * The very important AppService
  */
 public class TheAppService implements AppService{
     private final CustomerRepository customerRepository;
@@ -42,6 +42,7 @@ public class TheAppService implements AppService{
                 for (Customer c : customers) {
                     if (c.id().equals(id)){
                         temp.add(c);
+                        break;
                     }
                 }
             }
