@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
+ * The very important AppService
  */
 public class TheAppService implements AppService{
     private final CustomerRepository customerRepository;
@@ -43,6 +43,7 @@ public class TheAppService implements AppService{
                 for (Customer c : customers) {
                     if (c.id().equals(id)){
                         temp.add(c);
+                        break;
                     }
                 }
             }
